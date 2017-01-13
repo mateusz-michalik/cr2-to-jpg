@@ -7,7 +7,7 @@ import glob
 import time
 import argparse
 from PIL import Image
-from rawkit.raw import Raw
+from rawkit import raw
 
 # params
 parser = argparse.ArgumentParser(description='Convert CR2 to JPG')
@@ -32,7 +32,7 @@ def convert_cr2_to_jpg(raw_images):
         file_timestamp = os.path.getmtime(raw_image)
 
         # parse CR2 image
-        raw_image_process = Raw(raw_image)
+        raw_image_process = raw.Raw(raw_image)
         buffered_image = numpy.array(raw_image_process.to_buffer())
 
         # check orientation due to PIL image stretch issue
@@ -56,4 +56,5 @@ def convert_cr2_to_jpg(raw_images):
         raw_image_process.close()
 
 # call function
-convert_cr2_to_jpg(raw_images)
+if __name__ == "__main__":
+    convert_cr2_to_jpg(raw_images)
