@@ -4,9 +4,28 @@ A simple Python script to convert CR2 photos to JPG and retain timestamps.
 ## Instructions
 
 1. Clone or download
-2. Install required packages with `pip install`
-2. Set permissions to execute `chmod +x cr2-to-jpg.py`
-3. Run the script and pass source and destination folders, for example: `./cr2-to-jpg.py --source ~/Desktop/raw --destination ~/Desktop/converted`
+2. Install required packages with `pip install -r requirements.txt`
+3. Set permissions to execute `chmod +x cr2-to-jpg.py`
+4. Run the script and pass CR2 files as arguments
+
+## Usage
+
+```bash
+# Convert a single file (output goes to same directory)
+./cr2-to-jpg.py photo.CR2
+
+# Convert multiple files using shell glob
+./cr2-to-jpg.py ~/Desktop/raw/*.CR2
+
+# Output to a specific directory using --prefix
+./cr2-to-jpg.py --prefix ~/Desktop/converted/ ~/Desktop/raw/*.CR2
+
+# Add a postfix to output filenames (e.g., photo_web.jpg)
+./cr2-to-jpg.py --postfix _web ~/Desktop/raw/*.CR2
+
+# Combine prefix and postfix
+./cr2-to-jpg.py --prefix ~/Desktop/converted/ --postfix _small ~/Desktop/raw/*.CR2
+```
 
 ## Requirements
 

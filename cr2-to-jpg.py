@@ -3,26 +3,23 @@
 # import what we need
 import numpy
 import os
-import glob
-import time
 import argparse
 from PIL import Image
 from rawkit import raw
 
 # params
 parser = argparse.ArgumentParser(description='Convert CR2 to JPG')
-parser.add_argument('-s', '--source', help='Source folder of CR2 files', required=True)
-parser.add_argument('-d', '--destination', help='Destination folder for converted JPG files', required=True)
+parser.add_argument('files', metavar='FILE', nargs='+', help='CR2 files to convert')
+parser.add_argument('--prefix', default='', help='Output path prefix (e.g., "output/" for output directory)')
+parser.add_argument('--postfix', default='', help='Output filename postfix (e.g., "_converted")')
 args = parser.parse_args()
 
-# dirs and files
-raw_file_type = ".CR2"
-raw_dir = args.source + '/'
-converted_dir = args.destination + '/'
-raw_images = glob.glob(raw_dir + '*' + raw_file_type)
+# create output directory if prefix specified and doesn't exist
+if args.prefix and not os.path.exists(args.prefix):
+    os.makedirs(args.prefix)
 
 # converter function which iterates through list of files
-def convert_cr2_to_jpg(raw_images):
+def convert_cr2_to_jpg(raw_images, prefix='', postfix=''):
     for raw_image in raw_images:
         print "Converting the following raw image: " + raw_image + " to JPG"
 
@@ -43,8 +40,11 @@ def convert_cr2_to_jpg(raw_images):
             jpg_image_height = raw_image_process.metadata.width
             jpg_image_width = raw_image_process.metadata.height
 
-        # prep JPG details
-        jpg_image_location = converted_dir + file_without_ext + '.jpg'
+        # prep JPG details - use prefix for output dir, or same dir as input
+        output_dir = prefix if prefix else os.path.dirname(raw_image)
+        if output_dir and not output_dir.endswith(os.sep):
+            output_dir += os.sep
+        jpg_image_location = output_dir + file_without_ext + postfix + '.jpg'
         jpg_image = Image.frombytes('RGB', (jpg_image_width, jpg_image_height), buffered_image)
         jpg_image.save(jpg_image_location, format="jpeg")
 
@@ -57,4 +57,4 @@ def convert_cr2_to_jpg(raw_images):
 
 # call function
 if __name__ == "__main__":
-    convert_cr2_to_jpg(raw_images)
+    convert_cr2_to_jpg(args.files, args.prefix, args.postfix)
